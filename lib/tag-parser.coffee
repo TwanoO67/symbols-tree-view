@@ -65,8 +65,8 @@ module.exports =
       types = {}
 
       # sort tags by row number
-      @tags.sort (a, b) =>
-        return a.position.row - b.position.row
+      #@tags.sort (a, b) =>
+      #  return a.position.row - b.position.row
 
       # try to find out all tags with parent information
       for tag in @tags
@@ -90,8 +90,9 @@ module.exports =
           unless parent.position
             parent.position = new Point(tag.position.row-1)
 
+#order by function name
       @tags.sort (a, b) =>
-        return a.position.row - b.position.row
+        return if a.name.toUpperCase() >= b.name.toUpperCase() then 1 else -1
 
       for tag in @tags
         tag.label = tag.name
@@ -101,7 +102,9 @@ module.exports =
           parent.children ?= []
           parent.children.push(tag)
         else
-          roots.push(tag)
+          #limit treeview only for functions
+          if tag.type == 'function'
+            roots.push(tag)
         types[tag.type] = null
 
       return {root: {label: 'root', icon: null, children: roots}, types: Object.keys(types)}
